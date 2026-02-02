@@ -1,17 +1,19 @@
-import { Routes, Route } from 'react-router-dom'
-import Layout from './components/Layout'
-import Home from './pages/Home'
-import Journal from './pages/Journal'
-import Placeholder from './pages/Placeholder'
+import { useGameStore } from './store/gameStore'
+import StartScreen from './components/StartScreen'
+import HUD from './components/HUD'
+import Game from './game/Game'
 
 export default function App() {
+  const started = useGameStore((s) => s.started)
+
+  if (!started) {
+    return <StartScreen />
+  }
+
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/journal" element={<Journal />} />
-        <Route path="/:slug" element={<Placeholder />} />
-      </Route>
-    </Routes>
+    <>
+      <Game />
+      <HUD />
+    </>
   )
 }

@@ -113,7 +113,6 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   collectPlastic: () => {
     const s = get()
-    const mult = getScoreMultiplier(s.bonusXpActive)
     set({ plastic: s.plastic + 1 })
 
     // Quest progress for 'collect_plastic'

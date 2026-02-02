@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useGameStore } from '../store/gameStore'
+import QuestDisplay from './QuestDisplay'
 
 export default function HUD() {
   const plastic = useGameStore((s) => s.plastic)
@@ -11,6 +12,12 @@ export default function HUD() {
   const fillBottle = useGameStore((s) => s.fillBottle)
   const giveBottle = useGameStore((s) => s.giveBottle)
   const resetGame = useGameStore((s) => s.resetGame)
+  const gameMode = useGameStore((s) => s.gameMode)
+  const timeRemaining = useGameStore((s) => s.timeRemaining)
+  const tickTimer = useGameStore((s) => s.tickTimer)
+  const timedGameOver = useGameStore((s) => s.timedGameOver)
+  const bonusXpActive = useGameStore((s) => s.bonusXpActive)
+  const initDailyQuest = useGameStore((s) => s.initDailyQuest)
 
   // Keyboard shortcuts for interactions
   useEffect(() => {
@@ -24,12 +31,39 @@ export default function HUD() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [craftBottle, fillBottle, giveBottle])
 
+  // Timer for timed mode
+  useEffect(() => {
+    if (gameMode !== 'timed' || timedGameOver) return
+    const interval = setInterval(() => {
+      tickTimer()
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [gameMode, timedGameOver, tickTimer])
+
+  // Init daily quest for free mode
+  useEffect(() => {
+    if (gameMode === 'free') {
+      initDailyQuest()
+    }
+  }, [gameMode, initDailyQuest])
+
+  const minutes = Math.floor(timeRemaining / 60)
+  const seconds = timeRemaining % 60
+
   return (
     <div className="fixed inset-0 pointer-events-none z-10">
       {/* Score - top center */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-6 py-2 rounded-xl text-xl font-bold backdrop-blur-sm">
         ⭐ Poäng: {score}
+        {bonusXpActive && <span className="ml-2 text-yellow-400 text-sm">2x BONUS!</span>}
       </div>
+
+      {/* Timer - timed mode */}
+      {gameMode === 'timed' && (
+        <div className={`absolute top-16 left-1/2 -translate-x-1/2 px-6 py-2 rounded-xl text-2xl font-bold backdrop-blur-sm ${timeRemaining <= 30 ? 'bg-red-600/80 text-white animate-pulse' : 'bg-black/60 text-white'}`}>
+          ⏱️ {minutes}:{seconds.toString().padStart(2, '0')}
+        </div>
+      )}
 
       {/* Inventory - top left */}
       <div className="absolute top-4 left-4 bg-black/60 text-white px-4 py-3 rounded-xl backdrop-blur-sm space-y-1 text-sm">
@@ -54,6 +88,9 @@ export default function HUD() {
           <span>Hjälpta: {npcsHelped}</span>
         </div>
       </div>
+
+      {/* Daily quest - free mode only */}
+      {gameMode === 'free' && <QuestDisplay />}
 
       {/* Controls - bottom left */}
       <div className="absolute bottom-4 left-4 bg-black/60 text-white px-4 py-3 rounded-xl backdrop-blur-sm text-xs space-y-1">

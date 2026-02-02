@@ -50,18 +50,6 @@ export default function WaterSource({ position }: { position: [number, number, n
         <sphereGeometry args={[0.2, 8, 8]} />
         <meshStandardMaterial color="#74b9ff" transparent opacity={0.5} />
       </mesh>
-      {/* Label */}
-      <Text
-        position={[0, 2.2, 0]}
-        fontSize={0.35}
-        color="#fff"
-        anchorX="center"
-        anchorY="middle"
-        outlineWidth={0.02}
-        outlineColor="#000"
-      >
-        💧 Vattenkälla
-      </Text>
       {showHint && (
         <Text
           position={[0, 1.7, 0]}

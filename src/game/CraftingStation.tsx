@@ -58,18 +58,6 @@ export default function CraftingStation({ position }: { position: [number, numbe
         <cylinderGeometry args={[0.08, 0.08, 0.4, 6]} />
         <meshStandardMaterial color="#7f8c8d" />
       </mesh>
-      {/* Sign */}
-      <Text
-        position={[0, 2.2, 0]}
-        fontSize={0.35}
-        color="#fff"
-        anchorX="center"
-        anchorY="middle"
-        outlineWidth={0.02}
-        outlineColor="#000"
-      >
-        🔧 Bygga flaskor
-      </Text>
       {showHint && (
         <Text
           position={[0, 1.6, 0]}

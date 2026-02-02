@@ -5,6 +5,8 @@ import type { Group } from 'three'
 import { useGameStore } from '../store/gameStore'
 
 const INTERACT_DISTANCE = 2
+const WALK_SPEED = 1.5
+const WANDER_RADIUS = 8
 
 const NPC_COLORS = ['#e67e22', '#9b59b6', '#1abc9c', '#e74c3c', '#2ecc71']
 
@@ -24,29 +26,67 @@ export default function ThirstyNPC({ id, position, colorIndex }: Props) {
   const giveBottle = useGameStore((s) => s.giveBottle)
   const markNpcHelped = useGameStore((s) => s.markNpcHelped)
 
+  const currentPosRef = useRef<[number, number, number]>([...position])
+  const walkTargetRef = useRef<[number, number, number]>([...position])
+  const walkTimerRef = useRef(Math.random() * 3)
+
+  const pickNewTarget = () => {
+    const angle = Math.random() * Math.PI * 2
+    const dist = Math.random() * WANDER_RADIUS
+    walkTargetRef.current = [
+      position[0] + Math.cos(angle) * dist,
+      position[1],
+      position[2] + Math.sin(angle) * dist,
+    ]
+  }
+
   useFrame((_state, delta) => {
+    if (!ref.current) return
+
     if (fadeOut) {
-      if (ref.current) {
-        ref.current.scale.x -= delta * 0.5
-        ref.current.scale.y -= delta * 0.5
-        ref.current.scale.z -= delta * 0.5
-        if (ref.current.scale.x <= 0) {
-          ref.current.visible = false
-        }
+      ref.current.scale.x -= delta * 0.5
+      ref.current.scale.y -= delta * 0.5
+      ref.current.scale.z -= delta * 0.5
+      if (ref.current.scale.x <= 0) {
+        ref.current.visible = false
       }
       return
     }
     if (happy) return
 
-    const dx = playerPosition[0] - position[0]
-    const dz = playerPosition[2] - position[2]
-    const dist = Math.sqrt(dx * dx + dz * dz)
-    setShowHint(dist < INTERACT_DISTANCE)
-
-    // Idle bob
-    if (ref.current) {
-      ref.current.position.y = Math.sin(Date.now() * 0.003) * 0.05
+    // Random walk
+    walkTimerRef.current -= delta
+    if (walkTimerRef.current <= 0) {
+      pickNewTarget()
+      walkTimerRef.current = 2 + Math.random() * 4
     }
+
+    const cur = currentPosRef.current
+    const tgt = walkTargetRef.current
+    const dx = tgt[0] - cur[0]
+    const dz = tgt[2] - cur[2]
+    const dist = Math.sqrt(dx * dx + dz * dz)
+
+    if (dist > 0.1) {
+      const step = Math.min(WALK_SPEED * delta, dist)
+      cur[0] += (dx / dist) * step
+      cur[2] += (dz / dist) * step
+
+      // Rotate toward movement direction
+      const angle = Math.atan2(dx, dz)
+      ref.current.rotation.y = angle
+    }
+
+    // Apply position + idle bob
+    ref.current.position.x = cur[0]
+    ref.current.position.y = Math.sin(Date.now() * 0.003) * 0.05
+    ref.current.position.z = cur[2]
+
+    // Distance check using current position
+    const pdx = playerPosition[0] - cur[0]
+    const pdz = playerPosition[2] - cur[2]
+    const playerDist = Math.sqrt(pdx * pdx + pdz * pdz)
+    setShowHint(playerDist < INTERACT_DISTANCE)
   })
 
   const handleGive = () => {
@@ -58,8 +98,6 @@ export default function ThirstyNPC({ id, position, colorIndex }: Props) {
       setTimeout(() => setFadeOut(true), 2000)
     }
   }
-
-  // Key listener is handled in HUD component
 
   const bodyColor = happy ? '#2ecc71' : NPC_COLORS[colorIndex % NPC_COLORS.length]
 

@@ -124,10 +124,10 @@ export default function ThirstyNPC({ id, position, colorIndex }: Props) {
       </mesh>
 
       {/* Speech bubble */}
-      <Billboard position={[0, 2, 0]} follow={true}>
+      <Billboard position={[0, 2.1, 0]} follow={true}>
         {!happy && (
           <Text
-            fontSize={0.4}
+            fontSize={0.5}
             anchorX="center"
             anchorY="middle"
           >
@@ -136,7 +136,7 @@ export default function ThirstyNPC({ id, position, colorIndex }: Props) {
         )}
         {happy && (
           <Text
-            fontSize={0.4}
+            fontSize={0.5}
             anchorX="center"
             anchorY="middle"
           >
@@ -146,18 +146,19 @@ export default function ThirstyNPC({ id, position, colorIndex }: Props) {
       </Billboard>
 
       {showHint && !happy && (
-        <Billboard position={[0, 2.5, 0]} follow={true}>
+        <Billboard position={[0, 2.8, 0]} follow={true}>
           <Text
-            fontSize={0.22}
+            fontSize={0.4}
             color={filledBottles > 0 ? '#2ecc71' : '#e74c3c'}
             anchorX="center"
             anchorY="middle"
-            outlineWidth={0.02}
+            outlineWidth={0.04}
             outlineColor="#000"
+            fontWeight="bold"
             onClick={handleGive}
           >
             {filledBottles > 0
-              ? 'Tryck G för att ge vatten'
+              ? '[G] Ge vatten'
               : 'Inga fyllda flaskor'}
           </Text>
         </Billboard>

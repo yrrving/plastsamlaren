@@ -88,9 +88,9 @@ export const OBSTACLES: { x: number; z: number; radius: number }[] = [
   // Rocks (radius ~0.5 * scale)
   ...ROCKS.map(r => ({ x: r.pos[0], z: r.pos[2], radius: 0.6 * r.scale })),
   // Crafting station (at [-6, 0, 5], table is 2x1.2)
-  { x: -6, z: 5, radius: 1.2 },
-  // Water source (at [6, 0, 5], radius ~2)
-  { x: 6, z: 5, radius: 2.2 },
+  { x: -6, z: 5, radius: 1.0 },
+  // Water source - smaller radius so player can reach the fountain
+  { x: 6, z: 5, radius: 1.0 },
 ]
 
 const FLOWERS: [number, number, number][] = [

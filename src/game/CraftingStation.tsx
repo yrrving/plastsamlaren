@@ -59,18 +59,19 @@ export default function CraftingStation({ position }: { position: [number, numbe
         <meshStandardMaterial color="#7f8c8d" />
       </mesh>
       {showHint && (
-        <Billboard position={[0, 1.6, 0]} follow={true} lockX={false} lockY={false} lockZ={false}>
+        <Billboard position={[0, 2.0, 0]} follow={true} lockX={false} lockY={false} lockZ={false}>
           <Text
-            fontSize={0.25}
+            fontSize={0.45}
             color={plastic >= 5 ? '#2ecc71' : '#e74c3c'}
             anchorX="center"
             anchorY="middle"
-            outlineWidth={0.02}
+            outlineWidth={0.04}
             outlineColor="#000"
+            fontWeight="bold"
             onClick={handleCraft}
           >
             {plastic >= 5
-              ? `Tryck B för att bygga (${plastic} plast)`
+              ? `[B] Bygg flaska (${plastic} plast)`
               : `Behöver 5 plast (har ${plastic})`}
           </Text>
         </Billboard>

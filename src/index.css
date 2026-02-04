@@ -12,3 +12,21 @@ html, body, #root {
   overflow: hidden;
   font-family: 'Ubuntu', system-ui, -apple-system, sans-serif;
 }
+
+/* Mobile touch optimizations */
+html {
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Prevent iOS zoom on double tap */
+button, input {
+  touch-action: manipulation;
+}

@@ -22,6 +22,10 @@ interface GameState {
   timedGameOver: boolean
   tickTimer: () => void
 
+  // Mobile input (joystick values -1 to 1)
+  mobileInput: { x: number; y: number }
+  setMobileInput: (x: number, y: number) => void
+
   // Inventory
   plastic: number
   emptyBottles: number
@@ -66,6 +70,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   setGameMode: (mode) => set({ gameMode: mode }),
   timeRemaining: 120,
   timedGameOver: false,
+
+  mobileInput: { x: 0, y: 0 },
+  setMobileInput: (x, y) => set({ mobileInput: { x, y } }),
+
   tickTimer: () => {
     const s = get()
     if (s.gameMode !== 'timed' || s.timedGameOver) return
@@ -214,5 +222,6 @@ export const useGameStore = create<GameState>((set, get) => ({
       dailyQuest: null,
       questProgress: 0,
       bonusXpActive: false,
+      mobileInput: { x: 0, y: 0 },
     }),
 }))

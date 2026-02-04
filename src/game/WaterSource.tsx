@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Text } from '@react-three/drei'
+import { Text, Billboard } from '@react-three/drei'
 import type { Group } from 'three'
 import { useGameStore } from '../store/gameStore'
 
@@ -51,20 +51,21 @@ export default function WaterSource({ position }: { position: [number, number, n
         <meshStandardMaterial color="#74b9ff" transparent opacity={0.5} />
       </mesh>
       {showHint && (
-        <Text
-          position={[0, 1.7, 0]}
-          fontSize={0.25}
-          color={emptyBottles > 0 ? '#2ecc71' : '#e74c3c'}
-          anchorX="center"
-          anchorY="middle"
-          outlineWidth={0.02}
-          outlineColor="#000"
-          onClick={() => fillBottle()}
-        >
-          {emptyBottles > 0
-            ? `Tryck F för att fylla (${emptyBottles} tomma)`
-            : 'Inga tomma flaskor'}
-        </Text>
+        <Billboard position={[0, 1.7, 0]} follow={true} lockX={false} lockY={false} lockZ={false}>
+          <Text
+            fontSize={0.25}
+            color={emptyBottles > 0 ? '#2ecc71' : '#e74c3c'}
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="#000"
+            onClick={() => fillBottle()}
+          >
+            {emptyBottles > 0
+              ? `Tryck F för att fylla (${emptyBottles} tomma)`
+              : 'Inga tomma flaskor'}
+          </Text>
+        </Billboard>
       )}
     </group>
   )

@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Text } from '@react-three/drei'
+import { Text, Billboard } from '@react-three/drei'
 import type { Group } from 'three'
 import { useGameStore } from '../store/gameStore'
 
@@ -124,42 +124,43 @@ export default function ThirstyNPC({ id, position, colorIndex }: Props) {
       </mesh>
 
       {/* Speech bubble */}
-      {!happy && (
-        <Text
-          position={[0, 2, 0]}
-          fontSize={0.4}
-          anchorX="center"
-          anchorY="middle"
-        >
-          💧
-        </Text>
-      )}
-      {happy && (
-        <Text
-          position={[0, 2, 0]}
-          fontSize={0.4}
-          anchorX="center"
-          anchorY="middle"
-        >
-          😊
-        </Text>
-      )}
+      <Billboard position={[0, 2, 0]} follow={true}>
+        {!happy && (
+          <Text
+            fontSize={0.4}
+            anchorX="center"
+            anchorY="middle"
+          >
+            💧
+          </Text>
+        )}
+        {happy && (
+          <Text
+            fontSize={0.4}
+            anchorX="center"
+            anchorY="middle"
+          >
+            😊
+          </Text>
+        )}
+      </Billboard>
 
       {showHint && !happy && (
-        <Text
-          position={[0, 2.5, 0]}
-          fontSize={0.22}
-          color={filledBottles > 0 ? '#2ecc71' : '#e74c3c'}
-          anchorX="center"
-          anchorY="middle"
-          outlineWidth={0.02}
-          outlineColor="#000"
-          onClick={handleGive}
-        >
-          {filledBottles > 0
-            ? 'Tryck G för att ge vatten'
-            : 'Inga fyllda flaskor'}
-        </Text>
+        <Billboard position={[0, 2.5, 0]} follow={true}>
+          <Text
+            fontSize={0.22}
+            color={filledBottles > 0 ? '#2ecc71' : '#e74c3c'}
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="#000"
+            onClick={handleGive}
+          >
+            {filledBottles > 0
+              ? 'Tryck G för att ge vatten'
+              : 'Inga fyllda flaskor'}
+          </Text>
+        </Billboard>
       )}
     </group>
   )

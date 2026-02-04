@@ -2,14 +2,30 @@ import { useRef, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type { Group } from 'three'
 import { useGameStore } from '../store/gameStore'
+import { OBSTACLES } from './Environment'
 
 const SPEED = 8
 const BOUNDS = 45
+const PLAYER_RADIUS = 0.4
+
+// Check if position collides with any obstacle
+function checkCollision(x: number, z: number): boolean {
+  for (const obs of OBSTACLES) {
+    const dx = x - obs.x
+    const dz = z - obs.z
+    const dist = Math.sqrt(dx * dx + dz * dz)
+    if (dist < PLAYER_RADIUS + obs.radius) {
+      return true
+    }
+  }
+  return false
+}
 
 export default function Player() {
   const ref = useRef<Group>(null!)
   const keys = useRef({ w: false, a: false, s: false, d: false })
   const setPlayerPosition = useGameStore((s) => s.setPlayerPosition)
+  const mobileInput = useGameStore((s) => s.mobileInput)
 
   useEffect(() => {
     const onDown = (e: KeyboardEvent) => {
@@ -38,18 +54,43 @@ export default function Player() {
     const { w, a, s, d } = keys.current
     let dx = 0
     let dz = 0
+
+    // Keyboard input
     if (w) dz -= 1
     if (s) dz += 1
     if (a) dx -= 1
     if (d) dx += 1
+
+    // Mobile joystick input (add to keyboard input)
+    dx += mobileInput.x
+    dz += mobileInput.y
 
     // Normalize diagonal movement
     const len = Math.sqrt(dx * dx + dz * dz)
     if (len > 0) {
       dx = (dx / len) * SPEED * delta
       dz = (dz / len) * SPEED * delta
-      ref.current.position.x = Math.max(-BOUNDS, Math.min(BOUNDS, ref.current.position.x + dx))
-      ref.current.position.z = Math.max(-BOUNDS, Math.min(BOUNDS, ref.current.position.z + dz))
+
+      // Calculate new position
+      const newX = Math.max(-BOUNDS, Math.min(BOUNDS, ref.current.position.x + dx))
+      const newZ = Math.max(-BOUNDS, Math.min(BOUNDS, ref.current.position.z + dz))
+
+      // Check collision and apply movement
+      // Try full movement first
+      if (!checkCollision(newX, newZ)) {
+        ref.current.position.x = newX
+        ref.current.position.z = newZ
+      } else {
+        // Try sliding along X axis only
+        if (!checkCollision(newX, ref.current.position.z)) {
+          ref.current.position.x = newX
+        }
+        // Try sliding along Z axis only
+        else if (!checkCollision(ref.current.position.x, newZ)) {
+          ref.current.position.z = newZ
+        }
+        // Blocked in both directions - don't move
+      }
 
       // Face movement direction
       ref.current.rotation.y = Math.atan2(dx, dz)

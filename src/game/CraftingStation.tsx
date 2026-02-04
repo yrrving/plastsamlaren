@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Text } from '@react-three/drei'
+import { Text, Billboard } from '@react-three/drei'
 import type { Group } from 'three'
 import { useGameStore } from '../store/gameStore'
 
@@ -59,20 +59,21 @@ export default function CraftingStation({ position }: { position: [number, numbe
         <meshStandardMaterial color="#7f8c8d" />
       </mesh>
       {showHint && (
-        <Text
-          position={[0, 1.6, 0]}
-          fontSize={0.25}
-          color={plastic >= 5 ? '#2ecc71' : '#e74c3c'}
-          anchorX="center"
-          anchorY="middle"
-          outlineWidth={0.02}
-          outlineColor="#000"
-          onClick={handleCraft}
-        >
-          {plastic >= 5
-            ? `Tryck B för att bygga (${plastic} plast)`
-            : `Behöver 5 plast (har ${plastic})`}
-        </Text>
+        <Billboard position={[0, 1.6, 0]} follow={true} lockX={false} lockY={false} lockZ={false}>
+          <Text
+            fontSize={0.25}
+            color={plastic >= 5 ? '#2ecc71' : '#e74c3c'}
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.02}
+            outlineColor="#000"
+            onClick={handleCraft}
+          >
+            {plastic >= 5
+              ? `Tryck B för att bygga (${plastic} plast)`
+              : `Behöver 5 plast (har ${plastic})`}
+          </Text>
+        </Billboard>
       )}
     </group>
   )

@@ -3,6 +3,7 @@ import StartScreen from './components/StartScreen'
 import HUD from './components/HUD'
 import Game from './game/Game'
 import GameOverScreen from './components/GameOverScreen'
+import TouchControls from './components/TouchControls'
 
 export default function App() {
   const started = useGameStore((s) => s.started)
@@ -20,6 +21,7 @@ export default function App() {
     <>
       <Game />
       <HUD />
+      <TouchControls />
     </>
   )
 }

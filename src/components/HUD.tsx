@@ -3,11 +3,7 @@ import { useGameStore } from '../store/gameStore'
 import QuestDisplay from './QuestDisplay'
 
 export default function HUD() {
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    setIsMobile('ontouchstart' in window || navigator.maxTouchPoints > 0)
-  }, [])
+  const [isMobile] = useState(() => 'ontouchstart' in window || navigator.maxTouchPoints > 0)
   const plastic = useGameStore((s) => s.plastic)
   const emptyBottles = useGameStore((s) => s.emptyBottles)
   const filledBottles = useGameStore((s) => s.filledBottles)

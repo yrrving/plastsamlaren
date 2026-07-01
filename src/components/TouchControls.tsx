@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect } from 'react'
+import { useRef, useState, useCallback } from 'react'
 import { useGameStore } from '../store/gameStore'
 
 export default function TouchControls() {
@@ -72,10 +72,7 @@ export default function TouchControls() {
   }, [setMobileInput])
 
   // Detect if device supports touch
-  const [isTouchDevice, setIsTouchDevice] = useState(false)
-  useEffect(() => {
-    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0)
-  }, [])
+  const [isTouchDevice] = useState(() => 'ontouchstart' in window || navigator.maxTouchPoints > 0)
 
   if (!isTouchDevice) return null
 

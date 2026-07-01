@@ -28,7 +28,8 @@ export default function ThirstyNPC({ id, position, colorIndex }: Props) {
 
   const currentPosRef = useRef<[number, number, number]>([...position])
   const walkTargetRef = useRef<[number, number, number]>([...position])
-  const walkTimerRef = useRef(Math.random() * 3)
+  // -1 = not yet initialized; first useFrame tick seeds a random stagger
+  const walkTimerRef = useRef(-1)
 
   const pickNewTarget = () => {
     const angle = Math.random() * Math.PI * 2
@@ -55,6 +56,7 @@ export default function ThirstyNPC({ id, position, colorIndex }: Props) {
     if (happy) return
 
     // Random walk
+    if (walkTimerRef.current < 0) walkTimerRef.current = Math.random() * 3
     walkTimerRef.current -= delta
     if (walkTimerRef.current <= 0) {
       pickNewTarget()

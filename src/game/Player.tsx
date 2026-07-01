@@ -2,7 +2,7 @@ import { useRef, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type { Group } from 'three'
 import { useGameStore } from '../store/gameStore'
-import { OBSTACLES } from './Environment'
+import { OBSTACLES } from './obstacles'
 
 const SPEED = 8
 const BOUNDS = 45
